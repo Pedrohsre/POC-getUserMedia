@@ -39,3 +39,4 @@ Testa se `<input type="file" capture="environment">` abre diretamente a câmera 
 - `Blob` API — serialização de imagens
 
 Documentação utilizada: https://developer.mozilla.org/en-US/docs/Web/API/Media_Capture_and_Streams_API/Taking_still_photos e https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+Teste da aplicação: https://sparkly-halva-196369.netlify.app/
