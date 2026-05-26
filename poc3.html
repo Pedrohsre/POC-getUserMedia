@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POC 3 — Overlay de Nonce</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #1e293b; min-height: 100vh; }
+
+    .header { background: #2563eb; color: #fff; padding: 1rem 1.5rem; }
+    .header-bc { font-size: .75rem; opacity: .75; margin-bottom: .25rem; }
+    .header-bc a { color: #fff; text-decoration: none; }
+    .header-bc a:hover { text-decoration: underline; }
+    .header h1 { font-size: 1.125rem; font-weight: 700; }
+
+    .container { max-width: 640px; margin: 0 auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+
+    .nonce-display { background: #1e293b; border-radius: .75rem; padding: 1.25rem; }
+    .nonce-label { font-size: .6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: .075em; color: #94a3b8; margin-bottom: .375rem; }
+    .nonce-value { font-family: Consolas, Menlo, monospace; font-size: 2rem; font-weight: 700; letter-spacing: .15em; color: #60a5fa; }
+
+    .camera { display: flex; flex-direction: column; gap: .75rem; }
+    video { width: 100%; border-radius: .5rem; background: #0f172a; display: block; }
+
+    .btn-group { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .btn { padding: .5rem 1rem; border: none; border-radius: .5rem; font-size: .875rem; font-weight: 500; cursor: pointer; font-family: inherit; }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+    .btn:not(:disabled):hover { opacity: .85; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-success { background: #16a34a; color: #fff; }
+    .btn-danger  { background: #dc2626; color: #fff; }
+
+    #status { font-size: .8125rem; color: #64748b; }
+
+    .result { display: flex; flex-direction: column; gap: .75rem; }
+    .result img { width: 100%; border-radius: .5rem; display: block; }
+    .hash-label { font-size: .6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #64748b; margin-bottom: .25rem; }
+    .hash-value { font-family: Consolas, Menlo, monospace; font-size: .6875rem; word-break: break-all; background: #0f172a; color: #86efac; padding: .625rem .75rem; border-radius: .375rem; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-bc"><a href="index.html">Camera Spike</a></div>
+  <h1>POC 3 — Overlay de Nonce</h1>
+</header>
+
+<div class="container">
+
+  <div class="nonce-display">
+    <div class="nonce-label">Nonce da sessão</div>
+    <div class="nonce-value" id="nonce-value">—</div>
+  </div>
+
+  <div class="camera">
+    <video id="video" autoplay playsinline>Stream não disponível.</video>
+    <p id="status">Aguardando câmera...</p>
+    <div class="btn-group">
+      <button class="btn btn-primary" id="btn-start"   onclick="startCamera()">Iniciar câmera</button>
+      <button class="btn btn-success" id="btn-capture" onclick="capture()" disabled>Capturar com nonce</button>
+      <button class="btn btn-danger"  id="btn-stop"    onclick="stopCamera()" disabled>Parar</button>
+    </div>
+  </div>
+
+  <div class="result" id="result" style="display:none">
+    <img id="result-img" alt="Foto com overlay">
+    <div>
+      <div class="hash-label">SHA-256</div>
+      <div class="hash-value" id="hash-value"></div>
+    </div>
+  </div>
+
+</div>
+
+<canvas id="canvas" style="display:none"></canvas>
+
+<script>
+  const SESSION_NONCE = Array.from(
+    crypto.getRandomValues(new Uint8Array(4)),
+    b => b.toString(16).padStart(2, '0')
+  ).join('').toUpperCase();
+
+  document.getElementById('nonce-value').textContent = SESSION_NONCE;
+
+  let stream = null;
+  const video  = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+
+  function setStatus(text) {
+    document.getElementById('status').textContent = text;
+  }
+
+  async function startCamera() {
+    document.getElementById('btn-start').disabled = true;
+    setStatus('Solicitando permissão...');
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+        audio: false,
+      });
+      video.srcObject = stream;
+      video.addEventListener('loadedmetadata', () => {
+        setStatus('Câmera ativa.');
+        document.getElementById('btn-capture').disabled = false;
+        document.getElementById('btn-stop').disabled    = false;
+      }, { once: true });
+    } catch (err) {
+      document.getElementById('btn-start').disabled = false;
+      const msgs = {
+        NotAllowedError:  'Permissão negada — habilite a câmera nas configurações.',
+        NotFoundError:    'Câmera não encontrada.',
+        NotReadableError: 'Câmera em uso por outro aplicativo.',
+      };
+      setStatus(msgs[err.name] || 'Erro: ' + err.message);
+    }
+  }
+
+  async function capture() {
+    document.getElementById('btn-capture').disabled = true;
+    setStatus('Processando...');
+
+    const w = video.videoWidth, h = video.videoHeight;
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+
+    ctx.drawImage(video, 0, 0, w, h);
+
+    const tsText = new Date().toLocaleString('pt-BR');
+    const line   = 'AUDITORIA  ' + tsText + '  #' + SESSION_NONCE;
+    const barH   = Math.max(36, Math.round(h * 0.055));
+    const fSize  = Math.round(barH * 0.44);
+
+    ctx.fillStyle = 'rgba(0,0,0,0.72)';
+    ctx.fillRect(0, h - barH, w, barH);
+    ctx.fillStyle    = '#ffffff';
+    ctx.font         = 'bold ' + fSize + 'px Consolas, monospace';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(line, Math.round(w * 0.01), h - barH / 2);
+
+    canvas.toBlob(async blob => {
+      const buffer = await blob.arrayBuffer();
+      const digest = await crypto.subtle.digest('SHA-256', buffer);
+      const hex    = Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+      document.getElementById('result-img').src = URL.createObjectURL(blob);
+      document.getElementById('hash-value').textContent = hex;
+
+      const result = document.getElementById('result');
+      result.style.display = 'flex';
+      result.scrollIntoView({ behavior: 'smooth' });
+
+      document.getElementById('btn-capture').disabled = false;
+      setStatus('Captura concluída.');
+    }, 'image/jpeg', 0.92);
+  }
+
+  function stopCamera() {
+    stream?.getTracks().forEach(t => t.stop());
+    stream = null;
+    document.getElementById('btn-start').disabled   = false;
+    document.getElementById('btn-capture').disabled = true;
+    document.getElementById('btn-stop').disabled    = true;
+    setStatus('Câmera parada.');
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POC 1 — Captura via Câmera</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #1e293b; min-height: 100vh; }
+
+    .header { background: #009DB4; color: #fff; padding: 1rem 1.5rem; }
+    .header-bc { font-size: .75rem; opacity: .75; margin-bottom: .25rem; }
+    .header-bc a { color: #fff; text-decoration: none; }
+    .header-bc a:hover { text-decoration: underline; }
+    .header h1 { font-size: 1.125rem; font-weight: 700; }
+
+    .container { max-width: 640px; margin: 0 auto; padding: 1.25rem; }
+
+    .camera { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 1.25rem; }
+    video { width: 100%; border-radius: .5rem; background: #0f172a; display: block; }
+
+    button { padding: .625rem 1.25rem; border: none; border-radius: .5rem; font-size: .9375rem; font-weight: 600; cursor: pointer; font-family: inherit; background: #009DB4; color: #fff; }
+    button:hover { opacity: .85; }
+
+    .output img { width: 100%; border-radius: .5rem; display: block; }
+
+    #error { color: #dc2626; font-size: .875rem; margin-top: .5rem; display: none; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-bc"><a href="index.html">Camera Spike</a></div>
+  <h1>POC 1 — Captura via Câmera</h1>
+</header>
+
+<div class="container">
+
+  <div class="camera">
+    <video id="video" autoplay playsinline>Stream de vídeo não disponível.</video>
+    <button id="startbutton">Tirar foto</button>
+    <p id="error"></p>
+  </div>
+
+  <canvas id="canvas" style="display:none"></canvas>
+
+  <div class="output">
+    <img id="photo" alt="A foto capturada aparecerá aqui.">
+  </div>
+
+</div>
+
+<script>
+  (function () {
+    var width = 0;
+    var height = 0;
+    var streaming = false;
+
+    var video       = document.getElementById("video");
+    var canvas      = document.getElementById("canvas");
+    var photo       = document.getElementById("photo");
+    var startbutton = document.getElementById("startbutton");
+    var errorEl     = document.getElementById("error");
+
+    navigator.mediaDevices
+      .getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false })
+      .then(function (stream) {
+        video.srcObject = stream;
+        video.play();
+      })
+      .catch(function (err) {
+        var msgs = {
+          NotAllowedError:  "Permissão de câmera negada — habilite nas configurações do navegador.",
+          NotFoundError:    "Câmera não encontrada neste dispositivo.",
+          NotReadableError: "Câmera em uso por outro aplicativo.",
+        };
+        errorEl.textContent = msgs[err.name] || "Erro: " + err.message;
+        errorEl.style.display = "block";
+      });
+
+    video.addEventListener("canplay", function () {
+      if (!streaming) {
+        width  = video.videoWidth;
+        height = video.videoHeight;
+        canvas.setAttribute("width", width);
+        canvas.setAttribute("height", height);
+        streaming = true;
+      }
+    }, false);
+
+    startbutton.addEventListener("click", function (ev) {
+      takepicture();
+      ev.preventDefault();
+    }, false);
+
+    function clearphoto() {
+      var context = canvas.getContext("2d");
+      context.fillStyle = "#AAA";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      photo.setAttribute("src", canvas.toDataURL("image/png"));
+    }
+
+    function takepicture() {
+      var context = canvas.getContext("2d");
+      if (width && height) {
+        canvas.width  = width;
+        canvas.height = height;
+        context.drawImage(video, 0, 0, width, height);
+        photo.setAttribute("src", canvas.toDataURL("image/jpeg"));
+      } else {
+        clearphoto();
+      }
+    }
+
+    clearphoto();
+  })();
+</script>
+</body>
+</html>
