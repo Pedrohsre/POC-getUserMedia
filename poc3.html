@@ -37,6 +37,16 @@
     .result img { width: 100%; border-radius: .5rem; display: block; }
     .hash-label { font-size: .6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #64748b; margin-bottom: .25rem; }
     .hash-value { font-family: Consolas, Menlo, monospace; font-size: .6875rem; word-break: break-all; background: #0f172a; color: #86efac; padding: .625rem .75rem; border-radius: .375rem; line-height: 1.6; }
+
+    .explainer { border-top: 1px solid #e2e8f0; padding-top: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+    .explainer h2 { font-size: .9375rem; font-weight: 700; color: #1e293b; }
+    .step { display: flex; flex-direction: column; gap: .375rem; }
+    .step p { font-size: .875rem; color: #475569; line-height: 1.6; }
+    pre { font-family: Consolas, Menlo, monospace; font-size: .8125rem; background: #1e293b; color: #e2e8f0; padding: .875rem 1rem; border-radius: .375rem; overflow-x: auto; line-height: 1.7; }
+    pre .c { color: #64748b; }
+    pre .k { color: #93c5fd; }
+    pre .s { color: #86efac; }
+    pre .f { color: #fbbf24; }
   </style>
 </head>
 <body>
@@ -69,6 +79,53 @@
       <div class="hash-label">SHA-256</div>
       <div class="hash-value" id="hash-value"></div>
     </div>
+  </div>
+
+  <div class="explainer">
+    <h2>Como funciona</h2>
+
+    <div class="step">
+      <p><strong>1. Geração do nonce</strong> — 4 bytes aleatórios gerados pelo sistema operacional via Web Crypto API, convertidos para 8 caracteres hex. É criptograficamente seguro e único por sessão.</p>
+<pre><span class="k">const</span> nonce = <span class="f">Array.from</span>(
+  crypto.<span class="f">getRandomValues</span>(<span class="k">new</span> <span class="f">Uint8Array</span>(4)),
+  b => b.<span class="f">toString</span>(16).<span class="f">padStart</span>(2, <span class="s">'0'</span>)
+).<span class="f">join</span>(<span class="s">''</span>).<span class="f">toUpperCase</span>();
+<span class="c">// ex: "A3F21B9C"</span></pre>
+    </div>
+
+    <div class="step">
+      <p><strong>2. Congelamento do frame</strong> — o elemento <code>&lt;canvas&gt;</code> recebe uma cópia estática do frame atual do <code>&lt;video&gt;</code>. A partir desse momento o stream pode continuar rodando — o que está no canvas não muda mais.</p>
+<pre>canvas.width  = video.videoWidth;
+canvas.height = video.videoHeight;
+
+<span class="k">const</span> ctx = canvas.<span class="f">getContext</span>(<span class="s">'2d'</span>);
+ctx.<span class="f">drawImage</span>(video, 0, 0, canvas.width, canvas.height);</pre>
+    </div>
+
+    <div class="step">
+      <p><strong>3. Overlay queimado nos pixels</strong> — a barra e o texto são desenhados diretamente nos pixels do canvas com as primitivas 2D da API. Não é uma camada separada nem um metadado: é tinta sobre pixels, como pintar manualmente cada ponto. Recompressão, upload ou redimensionamento preservam os pixels.</p>
+<pre><span class="c">// barra semitransparente no rodapé</span>
+ctx.fillStyle = <span class="s">'rgba(0,0,0,0.72)'</span>;
+ctx.<span class="f">fillRect</span>(0, h - barH, w, barH);
+
+<span class="c">// texto gravado sobre a barra</span>
+ctx.fillStyle    = <span class="s">'#ffffff'</span>;
+ctx.font         = <span class="s">'bold 16px Consolas, monospace'</span>;
+ctx.textBaseline = <span class="s">'middle'</span>;
+ctx.<span class="f">fillText</span>(<span class="s">'AUDITORIA  25/05/2026 19:30  #A3F21B9C'</span>, 8, h - barH / 2);</pre>
+    </div>
+
+    <div class="step">
+      <p><strong>4. Serialização para JPEG e hash SHA-256</strong> — <code>toBlob</code> converte o canvas para bytes JPEG. <code>crypto.subtle.digest</code> calcula o SHA-256 desses bytes. Se qualquer pixel for alterado depois, o hash muda completamente — é assim que se detecta adulteração.</p>
+<pre>canvas.<span class="f">toBlob</span>(<span class="k">async</span> blob => {
+  <span class="k">const</span> buffer = <span class="k">await</span> blob.<span class="f">arrayBuffer</span>();
+  <span class="k">const</span> digest = <span class="k">await</span> crypto.subtle.<span class="f">digest</span>(<span class="s">'SHA-256'</span>, buffer);
+  <span class="k">const</span> hex    = <span class="f">Array.from</span>(<span class="k">new</span> <span class="f">Uint8Array</span>(digest))
+                   .<span class="f">map</span>(b => b.<span class="f">toString</span>(16).<span class="f">padStart</span>(2, <span class="s">'0'</span>)).<span class="f">join</span>(<span class="s">''</span>);
+<span class="c">  // hex: "e3b0c44298fc1c149afb..." — qualquer alteração muda tudo</span>
+}, <span class="s">'image/jpeg'</span>, 0.92);</pre>
+    </div>
+
   </div>
 
 </div>
