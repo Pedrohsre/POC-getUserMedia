@@ -14,38 +14,19 @@
     .hero h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: .375rem; }
     .hero p { font-size: .875rem; opacity: .85; max-width: 52ch; line-height: 1.6; }
 
-    .container { max-width: 720px; margin: 0 auto; padding: 1.5rem; }
+    .container { max-width: 720px; margin: 0 auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
     .section-title { font-size: .6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #64748b; margin-bottom: 1rem; }
 
-    .poc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; margin-bottom: 2rem; }
+    .poc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; }
     @media (max-width: 480px) { .poc-grid { grid-template-columns: 1fr; } }
     .poc-card { background: #fff; border: 1px solid #e2e8f0; border-radius: .75rem; padding: 1.125rem; text-decoration: none; color: inherit; transition: box-shadow .15s, transform .1s; display: block; }
     .poc-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); transform: translateY(-1px); }
     .poc-card h3 { font-size: .9375rem; font-weight: 700; margin-bottom: .25rem; }
     .poc-card p  { font-size: .8125rem; color: #64748b; line-height: 1.5; }
 
-    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: .75rem; padding: 1.25rem; margin-bottom: 1.25rem; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: .75rem; padding: 1.25rem; }
     .card-title { font-size: .6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: .075em; color: #64748b; margin-bottom: .875rem; }
-
-    .matrix-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: .8125rem; min-width: 560px; }
-    thead th { background: #f1f5f9; padding: .625rem .75rem; text-align: left; font-size: .6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #64748b; border-bottom: 1px solid #e2e8f0; }
-    tbody td { padding: .5rem .75rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-    tbody tr:last-child td { border-bottom: none; }
-    .os-cell { font-weight: 600; color: #1e293b; font-size: .8125rem; white-space: nowrap; }
-    .ios-row td { opacity: .65; font-style: italic; }
-
-    select, textarea, input[type=text] { width: 100%; border: 1px solid #e2e8f0; border-radius: .375rem; padding: .375rem .5rem; font-size: .8125rem; font-family: inherit; color: #1e293b; background: #fff; }
-    select:focus, textarea:focus, input[type=text]:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
-    textarea { resize: vertical; min-height: 3rem; }
-
-    .save-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: .875rem; flex-wrap: wrap; }
-    .save-info { font-size: .75rem; color: #94a3b8; }
-    .btn { display: inline-flex; align-items: center; gap: .375rem; padding: .5rem 1rem; border: none; border-radius: .5rem; font-size: .875rem; font-weight: 500; cursor: pointer; transition: opacity .15s; font-family: inherit; }
-    .btn:hover { opacity: .85; }
-    .btn-primary { background: #2563eb; color: #fff; }
-    .btn-outline { background: transparent; border: 1px solid #e2e8f0; color: #475569; }
-    .btn-sm { padding: .35rem .75rem; font-size: .8125rem; }
 
     .risk-list { display: flex; flex-direction: column; gap: .625rem; }
     .risk-item { display: flex; gap: .875rem; align-items: flex-start; padding: .875rem 1rem; border-radius: .625rem; border: 1px solid; }
@@ -65,23 +46,6 @@
     .risk-low    .risk-body h4  { color: #15803d; }
     .risk-low    .risk-body p   { color: #166534; }
 
-    .conclusion-grid { display: flex; flex-direction: column; gap: .75rem; }
-    .conclusion-row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
-    @media (max-width: 480px) { .conclusion-row { grid-template-columns: 1fr; } }
-    .field-label { font-size: .75rem; font-weight: 600; color: #475569; margin-bottom: .375rem; }
-
-    .dod-list { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
-    .dod-item { display: flex; align-items: flex-start; gap: .75rem; padding: .625rem .75rem; border-radius: .5rem; cursor: pointer; transition: background .1s; }
-    .dod-item:hover { background: #f8fafc; }
-    .dod-item input[type=checkbox] { width: 1.1rem; height: 1.1rem; margin-top: .15rem; accent-color: #2563eb; flex-shrink: 0; cursor: pointer; }
-    .dod-item span { font-size: .875rem; color: #475569; line-height: 1.5; }
-    .dod-item.checked span { text-decoration: line-through; color: #94a3b8; }
-    .dod-item.optional span::before { content: '(opcional) '; font-size: .75rem; color: #94a3b8; font-style: italic; }
-
-    .save-status { font-size: .75rem; padding: .25rem .625rem; border-radius: 9999px; }
-    .save-status.saved   { background: #dcfce7; color: #166534; }
-    .save-status.unsaved { background: #fef3c7; color: #92400e; }
-
     footer { text-align: center; padding: 2rem; font-size: .75rem; color: #94a3b8; }
   </style>
 </head>
@@ -94,52 +58,18 @@
 </header>
 
 <div class="container">
-  <div class="section-title">POCs</div>
-  <div class="poc-grid">
-    <a href="poc1.html" class="poc-card">
-      <h3>Captura via Câmera</h3>
-      <p>getUserMedia, preview ao vivo, captura sem acesso à galeria.</p>
-    </a>
-    <a href="#matrix" class="poc-card">
-      <h3>Matriz de Compatibilidade</h3>
-      <p>Registrar comportamento por navegador e dispositivo.</p>
-    </a>
-    <a href="poc3.html" class="poc-card">
-      <h3>Overlay de Nonce</h3>
-      <p>Metadados queimados no pixel + integridade SHA-256.</p>
-    </a>
-    <a href="poc4.html" class="poc-card">
-      <h3>Comparativo input capture</h3>
-      <p>Por que &lt;input capture&gt; não garante bloqueio da galeria.</p>
-    </a>
-  </div>
 
-  <div id="matrix" class="card">
-    <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
-      <span>Matriz de Compatibilidade</span>
-      <span id="matrix-status" class="save-status unsaved">não salvo</span>
-    </div>
-    <p style="font-size:.8125rem;color:#64748b;margin-bottom:1rem">Preencha após testar a POC 1 em cada combinação. Salvo no navegador.</p>
-    <div class="matrix-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Navegador / SO</th>
-            <th>getUserMedia abre?</th>
-            <th>Galeria acessível?</th>
-            <th>Resolução</th>
-            <th>Observações</th>
-          </tr>
-        </thead>
-        <tbody id="matrix-body"></tbody>
-      </table>
-    </div>
-    <div class="save-bar">
-      <span class="save-info" id="matrix-saved-at"></span>
-      <div style="display:flex;gap:.5rem">
-        <button class="btn btn-outline btn-sm" onclick="clearMatrix()">Limpar</button>
-        <button class="btn btn-primary btn-sm" onclick="saveMatrix()">Salvar</button>
-      </div>
+  <div>
+    <div class="section-title">POCs</div>
+    <div class="poc-grid">
+      <a href="poc1.html" class="poc-card">
+        <h3>POC 1 — Captura via Câmera</h3>
+        <p>getUserMedia, preview ao vivo, captura sem acesso à galeria.</p>
+      </a>
+      <a href="poc3.html" class="poc-card">
+        <h3>POC 3 — Overlay de Nonce</h3>
+        <p>Metadados queimados no pixel + integridade SHA-256.</p>
+      </a>
     </div>
   </div>
 
@@ -177,248 +107,9 @@
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
-      <span>Conclusão do Spike</span>
-      <span id="conclusion-status" class="save-status unsaved">não salvo</span>
-    </div>
-    <div class="conclusion-grid">
-      <div class="conclusion-row">
-        <div>
-          <div class="field-label">getUserMedia bloqueia efetivamente a galeria?</div>
-          <select id="c1" onchange="markUnsaved('conclusion')">
-            <option value="">— selecionar —</option>
-            <option value="sim">Sim, bloqueia completamente</option>
-            <option value="parcial">Sim, exceto iOS/Safari</option>
-            <option value="nao">Não bloqueia</option>
-          </select>
-        </div>
-        <div>
-          <div class="field-label">iOS representa risco real para o projeto?</div>
-          <select id="c2" onchange="markUnsaved('conclusion')">
-            <option value="">— selecionar —</option>
-            <option value="sim-critico">Sim — iPhones são obrigatórios em campo</option>
-            <option value="sim-baixo">Sim — mas perfil é majoritariamente Android</option>
-            <option value="nao">Não — sem iPhones em campo</option>
-          </select>
-        </div>
-      </div>
-      <div class="conclusion-row">
-        <div>
-          <div class="field-label">Qualidade da imagem é aceitável para evidência?</div>
-          <select id="c3" onchange="markUnsaved('conclusion')">
-            <option value="">— selecionar —</option>
-            <option value="sim">Sim, qualidade suficiente</option>
-            <option value="depende">Depende do dispositivo</option>
-            <option value="nao">Não, qualidade insuficiente</option>
-          </select>
-        </div>
-        <div>
-          <div class="field-label">Vale investigar Capacitor para iOS?</div>
-          <select id="c4" onchange="markUnsaved('conclusion')">
-            <option value="">— selecionar —</option>
-            <option value="sim">Sim — abrir história separada</option>
-            <option value="nao">Não — perfil Android dispensa</option>
-            <option value="pendente">Pendente — aguardar mapeamento de dispositivos</option>
-          </select>
-        </div>
-      </div>
-      <div>
-        <div class="field-label">Observações e recomendação final</div>
-        <textarea id="c-notes" rows="4" placeholder="Descreva a conclusão do spike: abordagem recomendada, riscos aceitos, próximos passos..." oninput="markUnsaved('conclusion')"></textarea>
-      </div>
-    </div>
-    <div class="save-bar">
-      <span class="save-info" id="conclusion-saved-at"></span>
-      <button class="btn btn-primary btn-sm" onclick="saveConclusion()">Salvar conclusão</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Definition of Done</div>
-    <ul class="dod-list" id="dod-list"></ul>
-  </div>
 </div>
 
 <footer>Camera Spike · EDGE 2 · HTML + JS puro · Sem dependências</footer>
 
-<script>
-  const STORAGE_KEY = 'edge2-camera-spike-v3';
-
-  const MATRIX_ROWS = [
-    { id: 'chrome-android',  label: 'Chrome — Android',     ios: false },
-    { id: 'firefox-android', label: 'Firefox — Android',    ios: false },
-    { id: 'samsung-android', label: 'Samsung Internet',      ios: false },
-    { id: 'safari-ios',      label: 'Safari — iOS',          ios: true  },
-    { id: 'chrome-ios',      label: 'Chrome — iOS',          ios: true  },
-    { id: 'chrome-desktop',  label: 'Chrome — Windows/Mac', ios: false },
-    { id: 'edge-desktop',    label: 'Edge — Windows',        ios: false },
-  ];
-
-  const DOD_ITEMS = [
-    { id: 'd1', text: 'POC 1 executada no Chrome desktop',                                                      optional: false },
-    { id: 'd2', text: 'POC 1 executada no Chrome Android (HTTPS obrigatório)',                                  optional: false },
-    { id: 'd3', text: 'Matriz preenchida com ao menos Chrome Android + Chrome desktop',                         optional: false },
-    { id: 'd4', text: 'POC 3 executada — nonce visível na foto, SHA-256 no resultado',                          optional: false },
-    { id: 'd5', text: 'POC 4 executada — diferença entre input capture e getUserMedia documentada',             optional: false },
-    { id: 'd6', text: 'Risco iOS documentado com recomendação clara (aceitar ou investigar Capacitor)',         optional: false },
-    { id: 'd7', text: 'Conclusão registrada com recomendação de abordagem',                                     optional: false },
-    { id: 'd8', text: 'Testes no Safari iOS e/ou Chrome iOS (requer dispositivo físico ou BrowserStack)',       optional: true  },
-  ];
-
-  const SELECT_OPTS = {
-    compat: [
-      { v: '',       l: 'não testado' },
-      { v: 'ok',     l: 'Funciona' },
-      { v: 'warn',   l: 'Funciona com limitação' },
-      { v: 'fail',   l: 'Não funciona' },
-    ],
-    gallery: [
-      { v: '',        l: 'não testado' },
-      { v: 'no',      l: 'Não acessível (esperado)' },
-      { v: 'yes',     l: 'Acessível (problema)' },
-      { v: 'partial', l: 'Parcialmente acessível' },
-    ],
-  };
-
-  let state = {
-    matrix: {},
-    conclusion: { c1: '', c2: '', c3: '', c4: '', notes: '' },
-    dod: {},
-    matrixSavedAt: null,
-    conclusionSavedAt: null,
-  };
-
-  function init() {
-    try { Object.assign(state, JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')); } catch {}
-    renderMatrix();
-    renderDod();
-    loadConclusion();
-    updateSaveIndicators();
-  }
-
-  function renderMatrix() {
-    const tbody = document.getElementById('matrix-body');
-    tbody.innerHTML = MATRIX_ROWS.map(row => {
-      const d   = state.matrix[row.id] || {};
-      const ios = row.ios ? ' ios-row' : '';
-      const iosNote = row.ios ? '<br><small style="font-size:.7rem;color:#94a3b8">opcional</small>' : '';
-      return `<tr class="${ios}">
-        <td class="os-cell">${row.label}${iosNote}</td>
-        <td>${buildSelect('m-compat-' + row.id, 'compat', d.compat || '')}</td>
-        <td>${buildSelect('m-gallery-' + row.id, 'gallery', d.gallery || '')}</td>
-        <td><input type="text" id="m-res-${row.id}" value="${esc(d.res || '')}" placeholder="ex: 1920×1080" oninput="markUnsaved('matrix')"></td>
-        <td><textarea id="m-note-${row.id}" placeholder="—" oninput="markUnsaved('matrix')">${esc(d.note || '')}</textarea></td>
-      </tr>`;
-    }).join('');
-  }
-
-  function buildSelect(id, type, val) {
-    const opts = SELECT_OPTS[type].map(o =>
-      `<option value="${o.v}"${o.v === val ? ' selected' : ''}>${o.l}</option>`
-    ).join('');
-    return `<select id="${id}" onchange="markUnsaved('matrix')">${opts}</select>`;
-  }
-
-  function collectMatrix() {
-    const obj = {};
-    MATRIX_ROWS.forEach(row => {
-      obj[row.id] = {
-        compat:  document.getElementById('m-compat-'  + row.id)?.value || '',
-        gallery: document.getElementById('m-gallery-' + row.id)?.value || '',
-        res:     document.getElementById('m-res-'     + row.id)?.value || '',
-        note:    document.getElementById('m-note-'    + row.id)?.value || '',
-      };
-    });
-    return obj;
-  }
-
-  function saveMatrix() {
-    state.matrix = collectMatrix();
-    state.matrixSavedAt = new Date().toISOString();
-    persist();
-    setStatus('matrix', 'saved', 'salvo às ' + fmt(state.matrixSavedAt));
-  }
-
-  function clearMatrix() {
-    if (!confirm('Limpar todos os dados da matriz?')) return;
-    state.matrix = {};
-    state.matrixSavedAt = null;
-    persist();
-    renderMatrix();
-    setStatus('matrix', 'unsaved', '');
-  }
-
-  function loadConclusion() {
-    const c = state.conclusion || {};
-    ['c1','c2','c3','c4'].forEach(k => {
-      const el = document.getElementById(k);
-      if (el) el.value = c[k] || '';
-    });
-    const notes = document.getElementById('c-notes');
-    if (notes) notes.value = c.notes || '';
-    if (state.conclusionSavedAt) setStatus('conclusion', 'saved', 'salvo às ' + fmt(state.conclusionSavedAt));
-  }
-
-  function saveConclusion() {
-    state.conclusion = {
-      c1:    document.getElementById('c1').value,
-      c2:    document.getElementById('c2').value,
-      c3:    document.getElementById('c3').value,
-      c4:    document.getElementById('c4').value,
-      notes: document.getElementById('c-notes').value,
-    };
-    state.conclusionSavedAt = new Date().toISOString();
-    persist();
-    setStatus('conclusion', 'saved', 'salvo às ' + fmt(state.conclusionSavedAt));
-  }
-
-  function renderDod() {
-    const list = document.getElementById('dod-list');
-    list.innerHTML = DOD_ITEMS.map(item => {
-      const checked = !!state.dod[item.id];
-      return `<li class="dod-item${checked ? ' checked' : ''}${item.optional ? ' optional' : ''}" onclick="toggleDod('${item.id}', this)">
-        <input type="checkbox" id="dod-${item.id}"${checked ? ' checked' : ''} onclick="event.stopPropagation();toggleDod('${item.id}', this.closest('li'))">
-        <span>${item.text}</span>
-      </li>`;
-    }).join('');
-  }
-
-  function toggleDod(id, li) {
-    const cb  = li.querySelector('input[type=checkbox]');
-    const val = !state.dod[id];
-    state.dod[id] = val;
-    cb.checked = val;
-    li.classList.toggle('checked', val);
-    persist();
-  }
-
-  function persist() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-
-  function markUnsaved(target) { setStatus(target, 'unsaved', 'alterações não salvas'); }
-
-  function setStatus(target, cls, text) {
-    const el = document.getElementById(target + '-status');
-    const at = document.getElementById(target + '-saved-at');
-    if (el) { el.className = 'save-status ' + cls; el.textContent = cls === 'saved' ? 'salvo' : 'não salvo'; }
-    if (at) at.textContent = text;
-  }
-
-  function updateSaveIndicators() {
-    if (state.matrixSavedAt)     setStatus('matrix',     'saved', 'salvo às ' + fmt(state.matrixSavedAt));
-    if (state.conclusionSavedAt) setStatus('conclusion', 'saved', 'salvo às ' + fmt(state.conclusionSavedAt));
-  }
-
-  function fmt(iso) {
-    if (!iso) return '';
-    return new Date(iso).toLocaleString('pt-BR', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
-  }
-
-  function esc(s) {
-    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  init();
-</script>
 </body>
 </html>
