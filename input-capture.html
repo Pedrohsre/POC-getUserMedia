@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teste — input capture</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 2rem; }
+
+    p { font-size: .875rem; color: #64748b; }
+
+    label {
+      padding: .75rem 1.5rem;
+      background: #1e293b;
+      color: #fff;
+      border-radius: .5rem;
+      font-size: .9375rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    label:hover { opacity: .85; }
+
+    #result { font-size: .8125rem; color: #475569; display: none; }
+    #preview { max-width: 100%; border-radius: .5rem; display: none; margin-top: .5rem; }
+  </style>
+</head>
+<body>
+
+  <p>Teste de <code>input type="file" capture="environment"</code></p>
+
+  <label>
+    Abrir câmera via input capture
+    <input type="file" accept="image/*" capture="environment" style="display:none" onchange="onFile(this)">
+  </label>
+
+  <p id="result"></p>
+  <img id="preview" alt="Foto selecionada">
+
+  <script>
+    function onFile(input) {
+      const file = input.files[0];
+      if (!file) return;
+      document.getElementById('result').textContent = file.name + ' — ' + (file.size / 1024).toFixed(1) + ' KB';
+      document.getElementById('result').style.display = 'block';
+      const preview = document.getElementById('preview');
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
